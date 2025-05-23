@@ -1,0 +1,25 @@
+    <VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lms.controller.StudentAssignmentsController">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label fx:id="assignmentCountLabel" text="My Assignments" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#refreshAssignments" text="Refresh" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+            <Button onAction="#backToDashboard" text="Back to Dashboard" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        </HBox>
+        
+        <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" vbarPolicy="ALWAYS" hbarPolicy="ALWAYS">
+            <TableView fx:id="assignmentsTable" VBox.vgrow="ALWAYS" style=".table-view .column-header { -fx-background-color: #e0e0e0; } .table-view .column-header .label { -fx-text-fill: black; -fx-font-weight: bold; } .table-view .column { -fx-background-color: #f0f0f0; } .table-view { -fx-background-color: white; } .table-row-cell { -fx-background-color: white; } .table-row-cell:odd { -fx-background-color: #f0f0f0; }">
+                <columns>
+                    <TableColumn fx:id="courseColumn" text="Course" prefWidth="150"/>
+                    <TableColumn fx:id="titleColumn" text="Assignment" prefWidth="200"/>
+                    <TableColumn fx:id="dueDateColumn" text="Due Date" prefWidth="150"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="gradeColumn" text="Grade" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </ScrollPane>
+    </VBox> 

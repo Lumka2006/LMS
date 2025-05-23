@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.lms.controller.InstructorDashboardController" 
+      spacing="10">
+    <MenuBar>
+        <Menu text="File">
+            <MenuItem text="Exit" onAction="#handleExit"/>
+        </Menu>
+        <Menu text="Courses">
+            <MenuItem text="Add Course" onAction="#showAddCourseDialog"/>
+            <MenuItem text="View Courses" onAction="#loadDashboardData"/>
+            <MenuItem text="Course Statistics" onAction="#showCourseStats"/>
+        </Menu>
+        <Menu text="Assignments">
+            <MenuItem text="Create Assignment" onAction="#showCreateAssignmentDialog"/>
+            <MenuItem text="Grade Submissions" onAction="#showGradeSubmissions"/>
+        </Menu>
+        <Menu text="Students">
+            <MenuItem text="View Enrolled Students" onAction="#showEnrolledStudents"/>
+            <MenuItem text="Student Progress" onAction="#showStudentProgress"/>
+        </Menu>
+        <Menu text="Help">
+            <MenuItem text="About" onAction="#showAbout"/>
+        </Menu>
+    </MenuBar>
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <HBox spacing="10">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Total Courses:"/>
+            <Label fx:id="totalCoursesLabel" style="-fx-font-size: 18px;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Total Students:"/>
+            <Label fx:id="totalStudentsLabel" style="-fx-font-size: 18px;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Total Assignments:"/>
+            <Label fx:id="totalAssignmentsLabel" style="-fx-font-size: 18px;"/>
+        </VBox>
+    </HBox>
+
+    <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS">
+        <Tab text="Courses" closable="false">
+            <VBox spacing="10">
+                <TableView fx:id="coursesTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn text="Course Code" fx:id="codeColumn"/>
+                        <TableColumn text="Title" fx:id="titleColumn"/>
+                        <TableColumn text="Start Date" fx:id="startDateColumn"/>
+                        <TableColumn text="End Date" fx:id="endDateColumn"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox> 

@@ -1,0 +1,17 @@
+LMS System Report
+Generated on: Fri May 23 09:10:15 SAST 2025
+
+=== User Report ===
+ADMIN: 1
+TEACHER: 3
+STUDENT: 2
+
+=== Course Report ===
+
+Course: Probability
+Code: BM123
+Enrollments: 1
+
+Course: statistics
+Code: BM12
+Enrollments: 1

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.XYChart?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.lms.controller.DashboardController"
+      spacing="15" styleClass="main-container">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Top Navigation Bar -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="top-nav">
+        <Label text="LMS" styleClass="app-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="notificationBtn" text="Notifications" styleClass="icon-button"/>
+        <Button fx:id="profileBtn" text="Profile" styleClass="icon-button"/>
+    </HBox>
+
+    <!-- Quick Actions Bar -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="quick-actions">
+        <Button fx:id="fadeButton" text="Fade Effect" styleClass="action-button"/>
+        <Button fx:id="glowButton" text="Glow Effect" styleClass="action-button"/>
+        <Button fx:id="rotateButton" text="Rotate Effect" styleClass="action-button"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="themeToggleBtn" text="Toggle Theme" styleClass="theme-button"/>
+    </HBox>
+
+    <!-- Main Content Area -->
+    <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="custom-tab-pane">
+        <!-- Tabs will be added programmatically -->
+    </TabPane>
+
+    <!-- Progress Section -->
+    <VBox spacing="10" styleClass="progress-section">
+        <Label text="Overall Progress" styleClass="section-title"/>
+        <HBox spacing="15" alignment="CENTER">
+            <ProgressBar fx:id="progressBar" prefWidth="300" styleClass="custom-progress-bar"/>
+            <ProgressIndicator fx:id="progressIndicator" styleClass="custom-progress-indicator"/>
+        </HBox>
+    </VBox>
+
+    <!-- Statistics Section -->
+    <HBox spacing="30" alignment="CENTER" styleClass="stats-section">
+        <VBox alignment="CENTER" styleClass="stat-box">
+            <Label text="Total Courses" styleClass="stat-label"/>
+            <Label fx:id="totalCoursesLabel" styleClass="stat-value"/>
+        </VBox>
+        <VBox alignment="CENTER" styleClass="stat-box">
+            <Label text="Total Assignments" styleClass="stat-label"/>
+            <Label fx:id="totalAssignmentsLabel" styleClass="stat-value"/>
+        </VBox>
+        <VBox alignment="CENTER" styleClass="stat-box">
+            <Label text="Active Students" styleClass="stat-label"/>
+            <Label fx:id="activeStudentsLabel" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+    <!-- Progress Chart -->
+    <VBox spacing="10" styleClass="chart-section">
+        <Label text="Progress Trend" styleClass="section-title"/>
+        <LineChart fx:id="progressChart" styleClass="custom-chart">
+            <xAxis>
+                <NumberAxis label="Time" styleClass="chart-axis"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Progress" styleClass="chart-axis"/>
+            </yAxis>
+        </LineChart>
+    </VBox>
+
+    <!-- Navigation Controls -->
+    <HBox spacing="15" alignment="CENTER" styleClass="navigation-controls">
+        <Button fx:id="prevBtn" text="Previous" styleClass="nav-button"/>
+        <Label fx:id="pageLabel" styleClass="page-label"/>
+        <Button fx:id="nextBtn" text="Next" styleClass="nav-button"/>
+    </HBox>
+
+    <!-- Activity and Student Lists -->
+    <SplitPane VBox.vgrow="ALWAYS" styleClass="custom-split-pane">
+        <VBox spacing="10" styleClass="list-section">
+            <Label text="Recent Activities" styleClass="section-title"/>
+            <ListView fx:id="activityList" styleClass="custom-list"/>
+        </VBox>
+        <VBox spacing="10" styleClass="list-section">
+            <Label text="Student List" styleClass="section-title"/>
+            <ListView fx:id="studentList" styleClass="custom-list"/>
+        </VBox>
+    </SplitPane>
+
+</VBox> 

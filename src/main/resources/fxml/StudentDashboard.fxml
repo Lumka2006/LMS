@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="10" style="-fx-background-color: white;" stylesheets="@../styles/common.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lms.controller.StudentDashboardController">
+    <padding>
+        <Insets bottom="10" left="10" right="10" top="10" />
+    </padding>
+
+    <MenuBar style="-fx-background-color: grey;">
+        <Menu text="File">
+            <MenuItem onAction="#handleLogout" text="Logout" />
+            <MenuItem onAction="#handleExit" text="Exit" />
+        </Menu>
+        <Menu text="Courses">
+            <MenuItem onAction="#loadEnrolledCourses" text="View My Courses" />
+            <MenuItem onAction="#showAvailableCourses" text="Available Courses" />
+        </Menu>
+        <Menu text="Assignments">
+            <MenuItem onAction="#handleViewAssignments" text="View Assignments" />
+            <MenuItem onAction="#showStudentProgress" text="My Progress" />
+        </Menu>
+        <Menu text="Help">
+            <MenuItem onAction="#showAbout" text="About" />
+        </Menu>
+    </MenuBar>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="welcomeLabel" styleClass="title-label" text="Welcome" />
+        <Region HBox.hgrow="ALWAYS" />
+        <ProgressIndicator fx:id="loadingIndicator" visible="false" />
+    </HBox>
+
+    <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS">
+        <effect>
+            <InnerShadow />
+        </effect>
+        
+        <tabs>
+            <!-- My Courses Tab -->
+            <Tab closable="false" text="My Courses">
+                <content>
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="courseCountLabel" text="Enrolled Courses: 0" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#showAvailableCourses" text="View Available Courses" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" vbarPolicy="ALWAYS" hbarPolicy="ALWAYS">
+                            <TableView fx:id="enrolledCoursesTable" style=".table-view .column-header { -fx-background-color: #e0e0e0; } .table-view .column-header .label { -fx-text-fill: black; -fx-font-weight: bold; } .table-view .column { -fx-background-color: #f0f0f0; } .table-view { -fx-background-color: white; } .table-row-cell { -fx-background-color: white; } .table-row-cell:odd { -fx-background-color: #f0f0f0; }" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="courseCodeColumn" text="Code" />
+                                    <TableColumn fx:id="courseTitleColumn" text="Title" />
+                                    <TableColumn fx:id="courseDescriptionColumn" text="Description" />
+                                    <TableColumn fx:id="courseInstructorColumn" text="Instructor" />
+                                    <TableColumn fx:id="courseStartDateColumn" text="Start Date" />
+                                    <TableColumn fx:id="courseEndDateColumn" text="End Date" />
+                                </columns>
+                            </TableView>
+                        </ScrollPane>
+                        <Pagination fx:id="coursesPagination" VBox.vgrow="NEVER" />
+                    </VBox>
+                </content>
+            </Tab>
+            
+            <!-- Assignments Tab -->
+            <Tab closable="false" text="My Assignments">
+                <content>
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label fx:id="assignmentCountLabel" text="Pending Assignments: 0" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#showSubmitAssignmentDialog" text="Submit Assignment" />
+                        </HBox>
+                        <TableView fx:id="assignmentsTable" style=".table-view .column-header { -fx-background-color: grey; } .table-view .column-header .label { -fx-text-fill: white; -fx-font-weight: bold; } .table-view .column { -fx-background-color: grey; } .table-view { -fx-background-color: white; } .table-row-cell { -fx-background-color: white; } .table-row-cell: odd { -fx-background-color: #f0f0f0; }: ;" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="assignmentTitleColumn" text="Assignment" />
+                                <TableColumn fx:id="assignmentCourseColumn" text="Course" />
+                                <TableColumn fx:id="assignmentDueDateColumn" text="Due Date" />
+                                <TableColumn fx:id="assignmentStatusColumn" text="Status" />
+                            </columns>
+                        </TableView>
+                        <Pagination fx:id="assignmentsPagination" VBox.vgrow="NEVER" />
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                    </VBox>
+                </content>
+            </Tab>
+        </tabs>
+    </TabPane>
+</VBox>
