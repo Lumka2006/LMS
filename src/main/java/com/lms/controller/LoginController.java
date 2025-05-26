@@ -79,20 +79,49 @@ public class LoginController {
 
     @FXML
     private void handleRegister() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), loginForm);
+        // Create fade out transition for login form
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), loginForm);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
-        fadeOut.setOnFinished(e -> {
+        fadeOut.setInterpolator(javafx.animation.Interpolator.EASE_OUT);
+        
+        // Create slide out effect
+        javafx.animation.TranslateTransition slideOut = new javafx.animation.TranslateTransition(Duration.millis(500), loginForm);
+        slideOut.setFromX(0);
+        slideOut.setToX(-50);
+        slideOut.setInterpolator(javafx.animation.Interpolator.EASE_OUT);
+        
+        // Combine animations
+        javafx.animation.ParallelTransition parallelOut = new javafx.animation.ParallelTransition(fadeOut, slideOut);
+        
+        parallelOut.setOnFinished(e -> {
             loginForm.setVisible(false);
             loginForm.setManaged(false);
             registerForm.setVisible(true);
             registerForm.setManaged(true);
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), registerForm);
+            
+            // Reset register form position
+            registerForm.setTranslateX(50);
+            registerForm.setOpacity(0);
+            
+            // Create fade in transition for register form
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), registerForm);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-            fadeIn.play();
+            fadeIn.setInterpolator(javafx.animation.Interpolator.EASE_IN);
+            
+            // Create slide in effect
+            javafx.animation.TranslateTransition slideIn = new javafx.animation.TranslateTransition(Duration.millis(500), registerForm);
+            slideIn.setFromX(50);
+            slideIn.setToX(0);
+            slideIn.setInterpolator(javafx.animation.Interpolator.EASE_IN);
+            
+            // Combine animations
+            javafx.animation.ParallelTransition parallelIn = new javafx.animation.ParallelTransition(fadeIn, slideIn);
+            parallelIn.play();
         });
-        fadeOut.play();
+        
+        parallelOut.play();
     }
 
     @FXML
@@ -147,20 +176,49 @@ public class LoginController {
 
     @FXML
     private void handleBackToLogin() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), registerForm);
+        // Create fade out transition for register form
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), registerForm);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
-        fadeOut.setOnFinished(e -> {
+        fadeOut.setInterpolator(javafx.animation.Interpolator.EASE_OUT);
+        
+        // Create slide out effect
+        javafx.animation.TranslateTransition slideOut = new javafx.animation.TranslateTransition(Duration.millis(500), registerForm);
+        slideOut.setFromX(0);
+        slideOut.setToX(50);
+        slideOut.setInterpolator(javafx.animation.Interpolator.EASE_OUT);
+        
+        // Combine animations
+        javafx.animation.ParallelTransition parallelOut = new javafx.animation.ParallelTransition(fadeOut, slideOut);
+        
+        parallelOut.setOnFinished(e -> {
             registerForm.setVisible(false);
             registerForm.setManaged(false);
             loginForm.setVisible(true);
             loginForm.setManaged(true);
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), loginForm);
+            
+            // Reset login form position
+            loginForm.setTranslateX(-50);
+            loginForm.setOpacity(0);
+            
+            // Create fade in transition for login form
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loginForm);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-            fadeIn.play();
+            fadeIn.setInterpolator(javafx.animation.Interpolator.EASE_IN);
+            
+            // Create slide in effect
+            javafx.animation.TranslateTransition slideIn = new javafx.animation.TranslateTransition(Duration.millis(500), loginForm);
+            slideIn.setFromX(-50);
+            slideIn.setToX(0);
+            slideIn.setInterpolator(javafx.animation.Interpolator.EASE_IN);
+            
+            // Combine animations
+            javafx.animation.ParallelTransition parallelIn = new javafx.animation.ParallelTransition(fadeIn, slideIn);
+            parallelIn.play();
         });
-        fadeOut.play();
+        
+        parallelOut.play();
     }
 
     private void clearRegistrationFields() {

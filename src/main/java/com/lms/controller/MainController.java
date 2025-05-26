@@ -18,9 +18,6 @@ public class MainController {
 
     private CourseController courseController;
     private AssignmentController assignmentController;
-    private DiscussionController discussionController;
-    private CalendarController calendarController;
-
     private static final int ITEMS_PER_PAGE = 10;
     private static final int TOTAL_ITEMS = 20;
 
@@ -48,8 +45,6 @@ public class MainController {
     private void initializeControllers() {
         courseController = new CourseController();
         assignmentController = new AssignmentController();
-        discussionController = new DiscussionController();
-        calendarController = new CalendarController();
     }
 
     private void setupTabPane() {
@@ -63,18 +58,8 @@ public class MainController {
         assignmentsTab.setContent(assignmentController.getAssignmentView());
         assignmentsTab.setClosable(false);
 
-        // Discussions Tab
-        Tab discussionsTab = new Tab("Discussions");
-        discussionsTab.setContent(discussionController.getDiscussionView(null, currentUser));
-        discussionsTab.setClosable(false);
-
-        // Calendar Tab
-        Tab calendarTab = new Tab("Calendar");
-        calendarTab.setContent(calendarController.getCalendarView(currentUser));
-        calendarTab.setClosable(false);
-
         // Add tabs to tab pane
-        tabPane.getTabs().addAll(coursesTab, assignmentsTab, discussionsTab, calendarTab);
+        tabPane.getTabs().addAll(coursesTab, assignmentsTab);
     }
 
     private void setupPagination() {
@@ -131,7 +116,6 @@ public class MainController {
         this.currentUser = user;
         courseController.currentUser = user;
         courseController.loadCourses();
-        calendarController.getCalendarView(user);
     }
 
     // Getters for components

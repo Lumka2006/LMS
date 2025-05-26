@@ -949,7 +949,7 @@ public class StudentDashboardController {
     @FXML
     private void handleViewAssignments() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/StudentAssignmentsView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/StudentAssignments.fxml"));
             Parent root = loader.load();
             
             StudentAssignmentsController controller = loader.getController();
@@ -957,9 +957,10 @@ public class StudentDashboardController {
             
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
+            
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Error loading assignments", e.getMessage());
+            showError("Error", "Failed to load assignments view: " + e.getMessage());
         }
     }
 
