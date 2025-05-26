@@ -25,10 +25,8 @@ public class Course {
     private final ObjectProperty<LocalDateTime> endDate;
     private DoubleProperty progress;
     private BooleanProperty isPublished;
-    private List<Module> modules;
     private List<Enrollment> enrollments;
     private List<Assignment> assignments;
-    private List<Announcement> announcements;
 
     // Constructor with all fields
     public Course(int courseId, String code, String title, String description, 
@@ -43,10 +41,8 @@ public class Course {
         this.endDate = new SimpleObjectProperty<>(endDate);
         this.progress = new SimpleDoubleProperty(0.0);
         this.isPublished = new SimpleBooleanProperty(false);
-        this.modules = new ArrayList<>();
         this.enrollments = new ArrayList<>();
         this.assignments = new ArrayList<>();
-        this.announcements = new ArrayList<>();
     }
 
     // Constructor without dates
@@ -86,9 +82,6 @@ public class Course {
     public void setInstructorName(String instructorName) { this.instructorName.set(instructorName); }
     public void setStartDate(LocalDateTime startDate) { this.startDate.set(startDate); }
     public void setEndDate(LocalDateTime endDate) { this.endDate.set(endDate); }
-
-    public List<Module> getModules() { return modules; }
-    public void setModules(List<Module> modules) { this.modules = modules; }
     
     public List<Enrollment> getEnrollments() { return enrollments; }
     public void setEnrollments(List<Enrollment> enrollments) { this.enrollments = enrollments; }
@@ -96,32 +89,24 @@ public class Course {
     public List<Assignment> getAssignments() { return assignments; }
     public void addAssignment(Assignment assignment) { this.assignments.add(assignment); }
     public void removeAssignment(Assignment assignment) { this.assignments.remove(assignment); }
-    
-    public List<Announcement> getAnnouncements() { return announcements; }
-    public void setAnnouncements(List<Announcement> announcements) { this.announcements = announcements; }
-
-    public void addModule(Module module) {
-        modules.add(module);
-    }
 
     public void addEnrollment(Enrollment enrollment) {
         enrollments.add(enrollment);
     }
 
-    public void addAnnouncement(Announcement announcement) {
-        announcements.add(announcement);
-    }
-
     public void calculateProgress(User currentUser) {
-        if (modules.isEmpty()) {
+        if (assignments.isEmpty()) {
             progress.set(0.0);
             return;
         }
 
-        double totalProgress = modules.stream()
-            .mapToDouble(module -> module.getProgress(currentUser))
-            .sum();
-        progress.set(totalProgress / modules.size());
+        // Calculate progress based on completed assignments
+        long completedAssignments = assignments.stream()
+            .filter(assignment -> assignment.getStatus() != null && 
+                                assignment.getStatus().equals("COMPLETED"))
+            .count();
+            
+        progress.set((double) completedAssignments / assignments.size());
     }
 
     @Override
