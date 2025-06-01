@@ -12,6 +12,7 @@ public class Assignment {
     private String status;
     private String grade;
     private int totalPoints;
+    private boolean submitted;
 
     public Assignment(int assignmentId, int courseId, String title, String description, LocalDateTime dueDate, int totalPoints, String courseName) {
         this.assignmentId = assignmentId;
@@ -21,6 +22,7 @@ public class Assignment {
         this.dueDate = dueDate;
         this.courseName = courseName;
         this.totalPoints = totalPoints;
+        this.submitted = false;
     }
 
     // Getters and setters
@@ -52,7 +54,10 @@ public class Assignment {
     public void setTotalPoints(int totalPoints) { this.totalPoints = totalPoints; }
 
     public boolean isSubmitted(User user) {
-        // This would typically check the database
-        return false;
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 } 

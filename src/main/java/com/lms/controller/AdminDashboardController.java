@@ -1,25 +1,30 @@
 package com.lms.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.geometry.Insets;
-import com.lms.model.User;
-import com.lms.util.DatabaseUtil;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javafx.stage.Stage;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.Alert.AlertType;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import java.util.List;
-import java.util.Optional;
-import javafx.application.Platform;
+// Importing JavaFX classes for creating the GUI and UI controls
+import javafx.fxml.FXML;  // Annotation to connect FXML file with Java code (for controllers).
+import javafx.scene.control.*;  // Importing common JavaFX UI controls such as Button, Label, TextField, ComboBox, etc.
+import javafx.scene.layout.VBox;  // A container layout that arranges its children vertically (often used for forms).
+import javafx.geometry.Insets;  // Defines padding around UI elements (e.g., for spacing).
+import javafx.scene.control.cell.PropertyValueFactory;  // Used to map data to the columns in a TableView (e.g., setting the value of a column).
+import javafx.scene.control.Alert.AlertType;  // Enum for defining the type of alert to be shown (information, error, warning, etc.).
+
+// Importing model and utility classes for the LMS system
+import com.lms.model.User;  // Represents the User entity in the Learning Management System (LMS).
+import com.lms.util.DatabaseUtil;  // Utility class that simplifies database connections and queries (e.g., for opening connections).
+
+// Importing classes for working with the database
+import java.sql.Connection;  // Represents a connection to the database.
+import java.sql.PreparedStatement;  // Used to execute precompiled SQL queries (prepared statements) in the database.
+import java.sql.ResultSet;  // Represents the result of a database query (a table of data).
+import java.sql.SQLException;  // Represents an exception thrown when there is an issue with database interaction (e.g., connection or query error).
+
+import javafx.beans.property.SimpleStringProperty;  // A simple string property that can be bound to JavaFX controls (used for TableView).
+import javafx.collections.FXCollections;  // Provides utility methods to create ObservableLists for dynamic data binding in JavaFX.
+import javafx.collections.ObservableList;  // Represents a list that can be observed and automatically updated in the UI (useful for TableView, ComboBox, etc.).
+
+// Importing JavaFX for handling concurrency and updating the UI on the application thread
+import javafx.application.Platform;  // Ensures UI updates are done on the JavaFX Application Thread (used when performing tasks in background threads).
+
 
 public class AdminDashboardController {
     @FXML private Label welcomeLabel;
@@ -54,7 +59,7 @@ public class AdminDashboardController {
         // Load data in background
         new Thread(() -> {
             try {
-                loadUsers();
+        loadUsers();
             } finally {
                 // Hide loading indicator on JavaFX thread
                 Platform.runLater(() -> loadingIndicator.setVisible(false));
@@ -78,7 +83,7 @@ public class AdminDashboardController {
         // Load data in background
         new Thread(() -> {
             try {
-                loadUsers();
+        loadUsers();
             } finally {
                 // Hide loading indicator on JavaFX thread
                 Platform.runLater(() -> loadingIndicator.setVisible(false));
@@ -174,21 +179,21 @@ public class AdminDashboardController {
 
         try {
             String query = "SELECT * FROM users ORDER BY user_id";
-            try (Connection conn = DatabaseUtil.getConnection();
-                 PreparedStatement pstmt = conn.prepareStatement(query);
-                 ResultSet rs = pstmt.executeQuery()) {
-                
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+            
                 users.clear();
-                while (rs.next()) {
+            while (rs.next()) {
                     User user = new User(
-                        rs.getInt("user_id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("role")
-                    );
+                    rs.getInt("user_id"),
+                    rs.getString("username"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("role")
+                );
                     user.setActive(rs.getString("status").equals("ACTIVE"));
                     users.add(user);
                 }
@@ -242,10 +247,10 @@ public class AdminDashboardController {
     private void showInfo(String title, String content) {
         Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(content);
-            alert.showAndWait();
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
         });
     }
 } 

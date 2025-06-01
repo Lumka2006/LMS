@@ -1,22 +1,27 @@
 package com.lms.controller;
 
-import com.lms.model.User;
-import com.lms.service.UserService;
-import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.io.IOException;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.ComboBox;
-import javafx.animation.FadeTransition;
-import javafx.util.Duration;
-import javafx.scene.control.Label;
+// Importing model and service classes for the LMS system
+import com.lms.model.User;  // Represents the User entity in the Learning Management System (LMS), which could be a student, teacher, or admin.
+import com.lms.service.UserService;  // Service class that handles business logic related to User entities (e.g., registration, authentication).
+
+// Importing JavaFX classes for working with the GUI and controls
+import javafx.fxml.FXML;  // Annotation used to link the controller code to an FXML file (for handling UI events and data binding).
+import javafx.scene.control.TextField;  // A text input field for user input (e.g., username, email).
+import javafx.scene.control.PasswordField;  // A specialized input field for securely entering passwords (characters are hidden).
+import javafx.scene.control.Alert;  // A dialog box used to show messages to the user (e.g., information, error, or warning messages).
+import javafx.scene.control.Alert.AlertType;  // Enum defining the type of alert to show (e.g., INFORMATION, ERROR, WARNING).
+import javafx.fxml.FXMLLoader;  // Used to load FXML files and convert them into JavaFX scene graphs, which bind the UI to the controller.
+import javafx.scene.Parent;  // Represents the root node of a JavaFX scene graph, containing all the UI components.
+import javafx.scene.Scene;  // Represents the scene (window) that is displayed inside the primary stage in a JavaFX application.
+import javafx.stage.Stage;  // Represents the main window (stage) of a JavaFX application, which can contain multiple scenes.
+
+import java.io.IOException;  // Exception class for handling input/output errors, such as issues when loading an FXML file or reading from a file.
+import javafx.scene.layout.VBox;  // A layout container that arranges its children vertically (used for form elements like text fields, buttons).
+import javafx.scene.control.ComboBox;  // A drop-down list (combo box) for selecting from a predefined set of options (e.g., role selection).
+import javafx.animation.FadeTransition;  // Used to create a fade-in or fade-out animation effect for JavaFX components.
+import javafx.util.Duration;  // Represents time duration for animations and transitions (used with `FadeTransition` to control animation speed).
+import javafx.scene.control.Label;  // A label component to display text to the user (e.g., instructional text or validation messages).
+
 
 public class LoginController {
     private static User currentUser;
@@ -110,7 +115,7 @@ public class LoginController {
             fadeIn.setToValue(1.0);
             fadeIn.setInterpolator(javafx.animation.Interpolator.EASE_IN);
             
-            // Create slide in effect
+            // create slide in effect
             javafx.animation.TranslateTransition slideIn = new javafx.animation.TranslateTransition(Duration.millis(500), registerForm);
             slideIn.setFromX(50);
             slideIn.setToX(0);
@@ -241,7 +246,8 @@ public class LoginController {
 
         System.out.println("Loading dashboard FXML from path: " + fxmlPath);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        // Use the correct class loader to load the FXML file
+        FXMLLoader loader = new FXMLLoader(LoginController.class.getResource(fxmlPath));
         if (loader.getLocation() == null) {
             System.out.println("ERROR: Could not find FXML file at path: " + fxmlPath);
             throw new IOException("Could not find FXML file: " + fxmlPath);

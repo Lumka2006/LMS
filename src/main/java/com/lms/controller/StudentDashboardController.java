@@ -1,51 +1,51 @@
 package com.lms.controller;
 
-import com.lms.model.Course;
-import com.lms.model.User;
-import com.lms.model.Assignment;
-import com.lms.model.Submission;
-import com.lms.service.CourseService;
-import com.lms.service.StudentService;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.geometry.Insets;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import java.time.format.DateTimeFormatter;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.stage.FileChooser;
-import java.io.File;
-import java.util.List;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import java.time.LocalDateTime;
-import javafx.application.Platform;
-import java.util.Date;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import com.lms.util.DatabaseUtil;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.text.SimpleDateFormat;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.paint.Color;
-import javafx.animation.FadeTransition;
-import javafx.util.Duration;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.ProgressBar;
+// Importing classes related to the model entities
+import com.lms.model.Course;  // Represents the course entity in the Learning Management System (LMS).
+import com.lms.model.User;    // Represents the user entity, which could be a student or instructor.
+import com.lms.model.Assignment;  // Represents an assignment in the LMS system.
+import com.lms.model.Submission;  // Represents a submission of an assignment by a student.
+
+// Importing service classes to handle business logic
+import com.lms.service.CourseService;  // Provides methods to interact with courses (CRUD operations, etc.)
+import com.lms.service.StudentService;  // Handles business logic for student-related operations in the LMS.
+
+// Importing JavaFX classes for creating the GUI and UI controls
+import javafx.fxml.FXML;  // Annotation to connect FXML file with Java code (for controllers).
+import javafx.scene.control.*;  // Importing common JavaFX UI controls like Button, TextField, Label, etc.
+import javafx.scene.control.cell.PropertyValueFactory;  // Used to map data to table columns in TableView.
+import javafx.scene.layout.VBox;  // A layout container that arranges its children vertically.
+import javafx.geometry.Insets;  // Provides padding and margins for UI components.
+import javafx.collections.FXCollections;  // Utility class for creating ObservableLists.
+import javafx.collections.ObservableList;  // Represents a list that can be observed and updated automatically.
+import java.time.format.DateTimeFormatter;  // Used for formatting date and time.
+import javafx.scene.layout.HBox;  // A layout container that arranges its children horizontally.
+import javafx.scene.layout.Priority;  // Used to set the priority of children in HBox or VBox layouts.
+import javafx.stage.FileChooser;  // Used to open a file dialog to choose files.
+import java.io.File;  // Represents a file or directory in the filesystem.
+import java.util.List;  // Represents a collection of elements.
+import javafx.beans.property.SimpleStringProperty;  // Represents a simple string property that can be bound to UI controls.
+import javafx.beans.property.StringProperty;  // Interface for string properties, allows data binding.
+import java.time.LocalDateTime;  // Represents date and time without timezone.
+import javafx.application.Platform;  // Used to interact with the JavaFX application thread, for UI updates.
+import java.sql.Connection;  // Represents a connection to the database.
+import java.sql.PreparedStatement;  // Represents a precompiled SQL statement for executing queries.
+import java.sql.ResultSet;  // Represents the result set of a query execution.
+import java.sql.SQLException;  // Represents an exception thrown when there is a database access error.
+import com.lms.util.DatabaseUtil;  // Utility class for managing database connections and queries.
+import javafx.fxml.FXMLLoader;  // Used to load FXML files and create scene graphs.
+import javafx.scene.Parent;  // The root node in the scene graph.
+import javafx.scene.Scene;  // Represents the scene which is rendered in a stage.
+import javafx.stage.Stage;  // Represents the main window of the JavaFX application.
+import java.util.ArrayList;  // A resizable array implementation of the List interface.
+import javafx.scene.control.Pagination;  // Provides pagination functionality for large datasets.
+import javafx.scene.control.ScrollPane;  // Allows scrolling of content within a pane.
+import javafx.scene.effect.DropShadow;  // Adds a shadow effect to UI components.
+import javafx.scene.paint.Color;  // Represents color values (RGBA, Hex, etc.).
+import javafx.scene.control.ProgressIndicator;  // A graphical indicator to show progress (e.g., loading).
+import javafx.scene.control.ProgressBar;  // A bar representing progress in a process.
+import java.util.Random;  // Used to generate random numbers (for example, random assignments).
+import javafx.scene.layout.Region;  // Represents the base class for all layout controls in JavaFX (e.g., HBox, VBox).
 
 public class StudentDashboardController {
     @FXML private Label welcomeLabel;
@@ -59,12 +59,15 @@ public class StudentDashboardController {
     @FXML private ScrollPane mainScrollPane;
     @FXML private ProgressIndicator loadingIndicator;
     @FXML private ProgressBar courseProgressBar;
+    @FXML private VBox dummyElementsContainer;
+    @FXML private Pagination dummyElementsPagination;
     
     private ObservableList<Course> enrolledCourses = FXCollections.observableArrayList();
     private ObservableList<Assignment> allAssignments = FXCollections.observableArrayList();
     private User currentUser;
     private static final int ITEMS_PER_PAGE = 5;
     private CourseService courseService = new CourseService();
+    private List<String> dummyElements = new ArrayList<>();
 
     public void setCurrentUser(User user) {
         System.out.println("StudentDashboardController.setCurrentUser called with user: " + (user != null ? user.getUsername() : "null"));
@@ -87,6 +90,9 @@ public class StudentDashboardController {
         
         // Setup pagination
         setupPagination();
+        
+        // Initialize dummy elements
+        initializeDummyElements();
         
         // Get the current user from LoginController
         currentUser = LoginController.getCurrentUser();
@@ -248,7 +254,11 @@ public class StudentDashboardController {
         dueDateCol.setPrefWidth(150);
         
         TableColumn<Assignment, String> statusCol = new TableColumn<>("Status");
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        statusCol.setCellValueFactory(cellData -> {
+            Assignment assignment = cellData.getValue();
+            String status = assignment.isSubmitted(currentUser) ? "Submitted" : "Not Submitted";
+            return new SimpleStringProperty(status);
+        });
         statusCol.setPrefWidth(100);
         
         assignmentsTable.getColumns().addAll(assignmentNameCol, courseCol, dueDateCol, statusCol);
@@ -358,10 +368,12 @@ public class StudentDashboardController {
         
         System.out.println("Loading assignments for user ID: " + currentUser.getUserId());
         
-        String query = "SELECT a.*, c.title as course_name " +
+        String query = "SELECT a.*, c.title as course_name, " +
+                      "CASE WHEN s.submission_id IS NOT NULL THEN true ELSE false END as is_submitted " +
                       "FROM assignments a " +
                       "JOIN courses c ON a.course_id = c.course_id " +
                       "JOIN enrollments e ON c.course_id = e.course_id " +
+                      "LEFT JOIN submissions s ON a.assignment_id = s.assignment_id AND s.student_id = ? " +
                       "WHERE e.student_id = ? " +
                       "ORDER BY a.due_date";
         
@@ -369,6 +381,7 @@ public class StudentDashboardController {
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             
             pstmt.setInt(1, currentUser.getUserId());
+            pstmt.setInt(2, currentUser.getUserId());
             ResultSet rs = pstmt.executeQuery();
             
             allAssignments.clear();
@@ -385,6 +398,7 @@ public class StudentDashboardController {
                     rs.getInt("total_points"),
                     rs.getString("course_name")
                 );
+                assignment.setSubmitted(rs.getBoolean("is_submitted"));
                 allAssignments.add(assignment);
             }
             
@@ -401,6 +415,9 @@ public class StudentDashboardController {
                     allAssignments.subList(0, Math.min(ITEMS_PER_PAGE, allAssignments.size()))
                 ));
             }
+            
+            // Force refresh of the table
+            assignmentsTable.refresh();
             
         } catch (SQLException e) {
             System.out.println("Error loading assignments: " + e.getMessage());
@@ -663,8 +680,11 @@ public class StudentDashboardController {
                     saveAttachments(submissionId, filePaths);
                 }
                 
-                // Refresh assignments list
-                loadAssignments();
+                // Refresh assignments list and update the table
+                Platform.runLater(() -> {
+                    loadAssignments();
+                    assignmentsTable.refresh();
+                });
                 return true;
             }
         } catch (SQLException e) {
@@ -1168,5 +1188,243 @@ public class StudentDashboardController {
                         "Failed to submit assignment: " + e.getMessage());
             }
         }
+    }
+
+    @FXML
+    private void viewSelectedAssignment() {
+        Assignment selectedAssignment = assignmentsTable.getSelectionModel().getSelectedItem();
+        if (selectedAssignment == null) {
+            showAlert(Alert.AlertType.WARNING, "No Assignment Selected", 
+                     "Please select an assignment to view.");
+            return;
+        }
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Assignment Details");
+        dialog.setHeaderText(selectedAssignment.getTitle());
+        dialog.getDialogPane().setPrefSize(600, 400);
+
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+
+        // Assignment details
+        Label courseLabel = new Label("Course: " + selectedAssignment.getCourseName());
+        Label descriptionLabel = new Label("Description: " + selectedAssignment.getDescription());
+        descriptionLabel.setWrapText(true);
+        Label dueDateLabel = new Label("Due Date: " + 
+            selectedAssignment.getDueDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        Label statusLabel = new Label("Status: " + 
+            (selectedAssignment.isSubmitted(currentUser) ? "Submitted" : "Not Submitted"));
+
+        // Add submission section if not submitted
+        VBox submissionBox = new VBox(10);
+        if (!selectedAssignment.isSubmitted(currentUser)) {
+            TextArea submissionArea = new TextArea();
+            submissionArea.setPromptText("Add your work here...");
+            submissionArea.setWrapText(true);
+            submissionArea.setPrefRowCount(5);
+
+            // File upload section
+            VBox fileUploadBox = new VBox(5);
+            Label fileLabel = new Label("Attach Files:");
+            ListView<String> fileList = new ListView<>();
+            fileList.setPrefHeight(100);
+            
+            HBox fileButtons = new HBox(10);
+            Button addFileButton = new Button("Add File");
+            Button removeFileButton = new Button("Remove File");
+            
+            addFileButton.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Select File");
+                File file = fileChooser.showOpenDialog(dialog.getDialogPane().getScene().getWindow());
+                if (file != null) {
+                    fileList.getItems().add(file.getAbsolutePath());
+                }
+            });
+            
+            removeFileButton.setOnAction(e -> {
+                int selectedIndex = fileList.getSelectionModel().getSelectedIndex();
+                if (selectedIndex >= 0) {
+                    fileList.getItems().remove(selectedIndex);
+                }
+            });
+            
+            fileButtons.getChildren().addAll(addFileButton, removeFileButton);
+            fileUploadBox.getChildren().addAll(fileLabel, fileList, fileButtons);
+
+            // Submit button
+            Button submitButton = new Button("Submit Assignment");
+            submitButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+            submitButton.setMaxWidth(Double.MAX_VALUE);
+            submitButton.setOnAction(e -> {
+                if (submissionArea.getText().trim().isEmpty() && fileList.getItems().isEmpty()) {
+                    showAlert(Alert.AlertType.WARNING, "Empty Submission", 
+                            "Please add some text or attach files before submitting.");
+                    return;
+                }
+                if (submitAssignment(selectedAssignment, submissionArea.getText(), fileList.getItems())) {
+                    showAlert(Alert.AlertType.INFORMATION, "Success", 
+                            "Assignment submitted successfully!");
+                    dialog.close();
+                    loadAssignments(); // Refresh the assignments list
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Error", 
+                            "Failed to submit assignment. Please try again.");
+                }
+            });
+
+            submissionBox.getChildren().addAll(
+                new Label("Your Work:"),
+                submissionArea,
+                fileUploadBox,
+                submitButton
+            );
+        } else {
+            // Show submission details if already submitted
+            String query = """
+                SELECT s.content, s.submitted_at, s.grade, s.feedback
+                FROM submissions s
+                WHERE s.assignment_id = ? AND s.student_id = ?
+            """;
+            
+            try (Connection conn = DatabaseUtil.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                
+                pstmt.setInt(1, selectedAssignment.getAssignmentId());
+                pstmt.setInt(2, currentUser.getUserId());
+                ResultSet rs = pstmt.executeQuery();
+                
+                if (rs.next()) {
+                    TextArea submissionContent = new TextArea(rs.getString("content"));
+                    submissionContent.setEditable(false);
+                    submissionContent.setWrapText(true);
+                    submissionContent.setPrefRowCount(5);
+                    
+                    Label submittedAtLabel = new Label("Submitted at: " + 
+                        rs.getTimestamp("submitted_at").toLocalDateTime()
+                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                    
+                    Label gradeLabel = new Label("Grade: " + 
+                        (rs.getInt("grade") > 0 ? rs.getInt("grade") + "/100" : "Not graded yet"));
+                    
+                    TextArea feedbackArea = new TextArea(rs.getString("feedback"));
+                    feedbackArea.setEditable(false);
+                    feedbackArea.setWrapText(true);
+                    feedbackArea.setPrefRowCount(3);
+                    
+                    submissionBox.getChildren().addAll(
+                        new Label("Your Submission:"),
+                        submissionContent,
+                        submittedAtLabel,
+                        gradeLabel,
+                        new Label("Feedback:"),
+                        feedbackArea
+                    );
+                }
+            } catch (SQLException ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", 
+                        "Failed to load submission details: " + ex.getMessage());
+            }
+        }
+
+        content.getChildren().addAll(
+            courseLabel,
+            descriptionLabel,
+            dueDateLabel,
+            statusLabel,
+            submissionBox
+        );
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+    }
+
+    private void initializeDummyElements() {
+        // Create 20 dummy elements
+        String[] firstNames = {"John", "Jane", "Michael", "Emily", "David", "Sarah", "James", "Emma", "William", "Olivia"};
+        String[] lastNames = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"};
+        
+        for (int i = 0; i < 20; i++) {
+            String firstName = firstNames[i % firstNames.length];
+            String lastName = lastNames[i % lastNames.length];
+            dummyElements.add(String.format("%s %s - Student ID: %d", firstName, lastName, 1000 + i));
+        }
+        
+        // Setup pagination
+        int pageCount = (int) Math.ceil((double) dummyElements.size() / ITEMS_PER_PAGE);
+        dummyElementsPagination.setPageCount(pageCount);
+        
+        // Add page change listener
+        dummyElementsPagination.currentPageIndexProperty().addListener((obs, oldVal, newVal) -> {
+            updateDummyElementsPage(newVal.intValue());
+        });
+        
+        // Show first page
+        updateDummyElementsPage(0);
+    }
+
+    private void updateDummyElementsPage(int pageIndex) {
+        dummyElementsContainer.getChildren().clear();
+        
+        int fromIndex = pageIndex * ITEMS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ITEMS_PER_PAGE, dummyElements.size());
+        
+        for (int i = fromIndex; i < toIndex; i++) {
+            String element = dummyElements.get(i);
+            HBox elementBox = createDummyElementBox(element);
+            dummyElementsContainer.getChildren().add(elementBox);
+        }
+    }
+
+    private HBox createDummyElementBox(String element) {
+        HBox box = new HBox(10);
+        box.setPadding(new Insets(10));
+        box.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
+        box.setMaxWidth(Double.MAX_VALUE);
+        
+        // Add hover effect
+        box.setOnMouseEntered(e -> {
+            box.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #2196F3; -fx-border-width: 1; -fx-border-radius: 5;");
+        });
+        
+        box.setOnMouseExited(e -> {
+            box.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 5;");
+        });
+        
+        Label nameLabel = new Label(element);
+        nameLabel.setStyle("-fx-font-size: 14px;");
+        
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        Button viewButton = new Button("View Details");
+        viewButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+        viewButton.setOnAction(e -> showDummyElementDetails(element));
+        
+        box.getChildren().addAll(nameLabel, spacer, viewButton);
+        return box;
+    }
+
+    private void showDummyElementDetails(String element) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Element Details");
+        dialog.setHeaderText(element);
+        
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+        
+        // Add some dummy details
+        content.getChildren().addAll(
+            new Label("Enrollment Date: " + LocalDateTime.now().minusDays(new Random().nextInt(365)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))),
+            new Label("Status: Active"),
+            new Label("Last Activity: " + LocalDateTime.now().minusHours(new Random().nextInt(24)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))),
+            new Label("Course Progress: " + (new Random().nextInt(100) + 1) + "%")
+        );
+        
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
     }
 } 

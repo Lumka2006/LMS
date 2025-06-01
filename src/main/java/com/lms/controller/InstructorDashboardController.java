@@ -1,42 +1,52 @@
 package com.lms.controller;
 
-import com.lms.model.Course;
-import com.lms.model.Assignment;
-import com.lms.model.Student;
-import com.lms.model.User;
-import com.lms.model.Submission;
-import com.lms.model.SubmissionAttachment;
-import com.lms.service.CourseService;
-import com.lms.service.AssignmentService;
-import com.lms.service.StudentService;
-import com.lms.service.SubmissionService;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.geometry.Insets;
-import javafx.beans.property.SimpleStringProperty;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.List;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import javafx.beans.property.StringProperty;
-import javafx.application.Platform;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import com.lms.util.DatabaseUtil;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+// Importing model classes representing various entities in the LMS
+import com.lms.model.Course;  // Represents the Course entity in the Learning Management System (LMS).
+import com.lms.model.Assignment;  // Represents the Assignment entity in the LMS, which can be linked to a course.
+import com.lms.model.Student;  // Represents the Student entity, containing information about students in the LMS.
+import com.lms.model.User;  // Represents the User entity in the system, which could be a student, teacher, or admin.
+import com.lms.model.Submission;  // Represents a Submission entity, capturing data related to student assignment submissions.
+import com.lms.model.SubmissionAttachment;  // Represents any attachments made to a Submission, such as files uploaded by the student.
+
+// Importing service classes to handle business logic for LMS entities
+import com.lms.service.CourseService;  // Service class responsible for managing course-related logic (CRUD operations, etc.).
+import com.lms.service.AssignmentService;  // Service class to manage assignment-related operations (e.g., creating, editing assignments).
+import com.lms.service.StudentService;  // Service class to handle student-specific logic (e.g., enrollment, fetching student details).
+import com.lms.service.SubmissionService;  // Service class to manage submission-related logic (e.g., saving and grading submissions).
+
+// Importing JavaFX classes to handle user interface (UI) logic
+import javafx.fxml.FXML;  // Annotation to link the controller code with an FXML file (to handle UI events and bindings).
+import javafx.fxml.Initializable;  // Interface that allows initialization of a controller class when the FXML is loaded.
+import javafx.scene.control.*;  // Importing common JavaFX controls such as Buttons, Labels, TableViews, ComboBoxes, TextFields, etc.
+import javafx.scene.control.cell.PropertyValueFactory;  // Used to map data from an object to a TableView column (displaying model data in tables).
+import javafx.collections.FXCollections;  // Utility class for creating and manipulating ObservableLists.
+import javafx.collections.ObservableList;  // Represents a list that can be observed and automatically updated by the UI (e.g., for TableView, ComboBox).
+import javafx.scene.layout.VBox;  // A vertical layout container used to arrange UI elements vertically (often for forms).
+import javafx.scene.layout.GridPane;  // A layout container that arranges elements in a grid-like structure (rows and columns).
+import javafx.scene.layout.HBox;  // A horizontal layout container used to arrange UI elements in a row.
+import javafx.geometry.Insets;  // Defines padding (margins) for JavaFX layout containers like VBox and GridPane, for spacing between elements.
+import javafx.beans.property.SimpleStringProperty;  // A simple string property that can be bound to UI components (used for TableView columns and other UI elements).
+
+// Importing classes for URL handling and managing resources for JavaFX
+import java.net.URL;  // Represents a Uniform Resource Locator, commonly used to load resources like FXML files and images.
+import java.util.ResourceBundle;  // Holds data (such as strings) for internationalization (i18n) and localization (l10n), usually for FXML and UI elements.
+
+import java.util.List;  // Represents a collection of objects, commonly used for storing multiple items (e.g., list of students, submissions).
+import java.time.LocalDateTime;  // Represents the current date and time without time zone information (useful for timestamps).
+import java.time.format.DateTimeFormatter;  // Used to format and parse date-time objects as strings.
+
+import java.sql.Connection;  // Represents a connection to a SQL database (used for querying and interacting with the database).
+import java.sql.PreparedStatement;  // Represents a SQL query that can be precompiled for repeated execution with different parameters (to prevent SQL injection).
+import java.sql.ResultSet;  // Represents the result set of a SQL query, which contains data returned from the database.
+import java.sql.SQLException;  // Exception class for handling database errors such as connection issues or invalid SQL queries.
+
+import com.lms.util.DatabaseUtil;  // A utility class to handle database connections and interactions, making the database logic reusable and manageable.
+
+import javafx.fxml.FXMLLoader;  // Used to load FXML files and convert them into JavaFX scene graphs (connecting the UI with the controller logic).
+import javafx.scene.Parent;  // Represents the root of the scene graph in a JavaFX application (used as a container for all UI components).
+import javafx.scene.Scene;  // Represents the scene (UI window) that is displayed in the primary stage (JavaFX app window).
+import javafx.stage.Stage;  // Represents the primary window (stage) of the JavaFX application. A stage contains a scene and controls how it is displayed.
+
 
 public class InstructorDashboardController implements Initializable {
     @FXML private Label welcomeLabel;
@@ -54,7 +64,6 @@ public class InstructorDashboardController implements Initializable {
     @FXML private TableColumn<Assignment, String> assignmentTitleColumn;
     @FXML private TableColumn<Assignment, String> assignmentCourseColumn;
     @FXML private TableColumn<Assignment, String> assignmentDueDateColumn;
-    @FXML private TableColumn<Assignment, String> assignmentStatusColumn;
     
     @FXML private TableView<Student> studentsTable;
     @FXML private TableColumn<Student, String> studentNameColumn;
@@ -105,12 +114,34 @@ public class InstructorDashboardController implements Initializable {
             LocalDateTime date = cellData.getValue().getDueDate();
             return new SimpleStringProperty(date != null ? date.format(dateFormatter) : "");
         });
-        assignmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         
         // Student table columns
         studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         studentEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        studentCoursesColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        studentCoursesColumn.setCellValueFactory(cellData -> {
+            Student student = cellData.getValue();
+            String query = """
+                SELECT STRING_AGG(c.title, ', ') as enrolled_courses
+                FROM enrollments e
+                JOIN courses c ON e.course_id = c.course_id
+                WHERE e.student_id = ? AND e.status = 'ACTIVE'
+            """;
+            
+            try (Connection conn = DatabaseUtil.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                
+                pstmt.setInt(1, student.getId());
+                ResultSet rs = pstmt.executeQuery();
+                
+                if (rs.next()) {
+                    String courses = rs.getString("enrolled_courses");
+                    return new SimpleStringProperty(courses != null ? courses : "No courses enrolled");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return new SimpleStringProperty("Error loading courses");
+        });
     }
 
     public void setCurrentUser(User user) {
@@ -294,11 +325,35 @@ public class InstructorDashboardController implements Initializable {
         Label studentCountLabel = new Label("Total Enrolled Students: " + enrolledStudents.size());
         Label assignmentCountLabel = new Label("Total Assignments: " + assignments.size());
         
-        // Calculate average progress
-        double avgProgress = enrolledStudents.stream()
-            .mapToDouble(Student::getProgress)
-            .average()
-            .orElse(0.0);
+        // Calculate average progress based on grades
+        String query = """
+            SELECT AVG(
+                CASE 
+                    WHEN s.grade IS NOT NULL THEN 
+                        CAST(s.grade AS DECIMAL) / 100
+                    ELSE 0.0
+                END
+            ) as avg_progress
+            FROM submissions s
+            JOIN assignments a ON s.assignment_id = a.assignment_id
+            WHERE a.course_id = ?
+        """;
+        
+        double avgProgress = 0.0;
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
+            pstmt.setInt(1, selectedCourse.getCourseId());
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                avgProgress = rs.getDouble("avg_progress") * 100; // Convert to percentage
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to calculate average progress: " + e.getMessage());
+        }
+        
         Label avgProgressLabel = new Label(String.format("Average Student Progress: %.1f%%", avgProgress));
 
         content.getChildren().addAll(studentCountLabel, assignmentCountLabel, avgProgressLabel);
@@ -638,7 +693,36 @@ public class InstructorDashboardController implements Initializable {
         TableColumn<Student, String> progressCol = new TableColumn<>("Progress");
         progressCol.setCellValueFactory(cellData -> {
             Student student = cellData.getValue();
-            return new SimpleStringProperty(String.format("%.1f%%", student.getProgress()));
+            // Calculate progress based on grades for this specific course
+            String query = """
+                SELECT AVG(
+                    CASE 
+                        WHEN s.grade IS NOT NULL THEN 
+                            CAST(s.grade AS DECIMAL) / 100
+                        ELSE 0.0
+                    END
+                ) as student_progress
+                FROM submissions s
+                JOIN assignments a ON s.assignment_id = a.assignment_id
+                WHERE a.course_id = ? AND s.student_id = ?
+            """;
+            
+            double progress = 0.0;
+            try (Connection conn = DatabaseUtil.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(query)) {
+                
+                pstmt.setInt(1, selectedCourse.getCourseId());
+                pstmt.setInt(2, student.getId());
+                ResultSet rs = pstmt.executeQuery();
+                
+                if (rs.next()) {
+                    progress = rs.getDouble("student_progress") * 100; // Convert to percentage
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            
+            return new SimpleStringProperty(String.format("%.1f%%", progress));
         });
 
         studentsTable.getColumns().addAll(nameCol, emailCol, progressCol);

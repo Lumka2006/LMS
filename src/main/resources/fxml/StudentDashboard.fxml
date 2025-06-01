@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" spacing="10" style="-fx-background-color: white;" stylesheets="@../styles/common.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lms.controller.StudentDashboardController">
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="10" style="-fx-background-color: white;" stylesheets="@../styles/common.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lms.controller.StudentDashboardController">
     <padding>
         <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
@@ -33,8 +33,7 @@
             <MenuItem onAction="#loadEnrolledCourses" text="View My Courses" />
             <MenuItem onAction="#showAvailableCourses" text="Available Courses" />
         </Menu>
-        <Menu text="Assignments">
-            <MenuItem onAction="#handleViewAssignments" text="View Assignments" />
+        <Menu text="My progress">
             <MenuItem onAction="#showStudentProgress" text="My Progress" />
         </Menu>
         <Menu text="Help">
@@ -97,8 +96,29 @@
                                 <TableColumn fx:id="assignmentStatusColumn" text="Status" />
                             </columns>
                         </TableView>
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <Button onAction="#viewSelectedAssignment" text="View Assignment" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                            <Button onAction="#showSubmitAssignmentDialog" text="Submit Assignment" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                        </HBox>
                         <Pagination fx:id="assignmentsPagination" VBox.vgrow="NEVER" />
-                  <BorderPane prefHeight="200.0" prefWidth="200.0" />
+                    </VBox>
+                </content>
+            </Tab>
+
+            <!-- Dummy Elements Tab -->
+            <Tab closable="false" text="Dummy Elements">
+                <content>
+                    <VBox spacing="10">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Dummy Elements List" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                            <VBox fx:id="dummyElementsContainer" spacing="5" style="-fx-background-color: white;">
+                                <!-- Dummy elements will be added here programmatically -->
+                            </VBox>
+                        </ScrollPane>
+                        <Pagination fx:id="dummyElementsPagination" VBox.vgrow="NEVER" />
                     </VBox>
                 </content>
             </Tab>

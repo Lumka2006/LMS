@@ -109,8 +109,31 @@ public class Student extends User {
     private void updateProgress() {
         if (totalAssignments.isEmpty()) {
             progress.set(0.0);
+            return;
+        }
+
+        double totalGrade = 0;
+        int gradedAssignments = 0;
+        
+        for (Assignment assignment : totalAssignments) {
+            if (assignment.getGrade() != null && !assignment.getGrade().isEmpty()) {
+                try {
+                    // Extract numeric grade from string (e.g., "85/100" -> 85)
+                    String gradeStr = assignment.getGrade().split("/")[0];
+                    totalGrade += Double.parseDouble(gradeStr);
+                    gradedAssignments++;
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    // Skip invalid grade formats
+                    continue;
+                }
+            }
+        }
+        
+        // Calculate average grade as progress
+        if (gradedAssignments > 0) {
+            progress.set(totalGrade / (gradedAssignments * 100));
         } else {
-            progress.set((double) completedAssignments.size() / totalAssignments.size() * 100);
+            progress.set(0.0);
         }
     }
 

@@ -339,12 +339,15 @@ public class DatabaseUtil {
 
     public static double getAverageProgress() {
         String query = """
-            SELECT AVG(CASE 
-                WHEN s.status = 'GRADED' THEN 1.0
-                WHEN s.status = 'SUBMITTED' THEN 0.5
-                ELSE 0.0
-            END) as avg_progress
+            SELECT AVG(
+                CASE 
+                    WHEN s.grade IS NOT NULL THEN 
+                        CAST(SPLIT_PART(s.grade, '/', 1) AS DECIMAL) / 100
+                    ELSE 0.0
+                END
+            ) as avg_progress
             FROM submissions s
+            WHERE s.grade IS NOT NULL
         """;
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();

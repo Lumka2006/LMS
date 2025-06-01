@@ -100,13 +100,30 @@ public class Course {
             return;
         }
 
-        // Calculate progress based on completed assignments
-        long completedAssignments = assignments.stream()
-            .filter(assignment -> assignment.getStatus() != null && 
-                                assignment.getStatus().equals("COMPLETED"))
-            .count();
-            
-        progress.set((double) completedAssignments / assignments.size());
+        // Calculate progress based on grades
+        double totalGrade = 0;
+        int gradedAssignments = 0;
+        
+        for (Assignment assignment : assignments) {
+            if (assignment.getGrade() != null && !assignment.getGrade().isEmpty()) {
+                try {
+                    // Extract numeric grade from string (e.g., "85/100" -> 85)
+                    String gradeStr = assignment.getGrade().split("/")[0];
+                    totalGrade += Double.parseDouble(gradeStr);
+                    gradedAssignments++;
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    // Skip invalid grade formats
+                    continue;
+                }
+            }
+        }
+        
+        // Calculate average grade as progress
+        if (gradedAssignments > 0) {
+            progress.set(totalGrade / (gradedAssignments * 100));
+        } else {
+            progress.set(0.0);
+        }
     }
 
     @Override
